@@ -35,6 +35,7 @@
 // Nrf24l settings
 
 #define mirf_ADDR_LEN	5
+// 默认00寄存器配置，开启CRC小校验，使用‘0’-8 位CRC 校验模式。其实芯片默认也是这个模式。
 #define mirf_CONFIG ((1<<EN_CRC) | (0<<CRCO) )
 
 class Nrf24l {

@@ -91,8 +91,13 @@
 #define RX_EMPTY    0
 
 /* Instruction Mnemonics */
-#define R_REGISTER    0x00
-#define W_REGISTER    0x20
+// 读寄存器命令
+#define R_REGISTER    0x00    
+//  写寄存器命令  
+//  W_REGISTER 001A AAAA 写配置寄存器。AAAAA 指出写操作的寄存器地址
+//  只有在掉电模式和待机模式下可操作。
+#define W_REGISTER    0x20    
+// 寄存器地址掩码 11111  = 0x1F
 #define REGISTER_MASK 0x1F
 #define R_RX_PAYLOAD  0x61
 #define W_TX_PAYLOAD  0xA0
