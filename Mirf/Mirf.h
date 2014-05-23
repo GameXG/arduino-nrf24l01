@@ -45,6 +45,13 @@ class Nrf24l {
 		void init();
 		void config();
 		void send(uint8_t *value);
+		
+void send_head() ;
+
+void send_content(uint8_t * data,uint8_t length) ;
+void send_end() ;
+
+		
 		void setRADDR(uint8_t * adr);
 		void setTADDR(uint8_t * adr);
 		bool dataReady();

@@ -265,6 +265,57 @@ void Nrf24l::send(uint8_t * value)
     ceHi();                     // Start transmission
 }
 
+void Nrf24l::send_head() 
+// Sends a data package to the default address. Be sure to send the correct
+// amount of bytes as configured as payload on the receiver.
+{
+    uint8_t status;
+    status = getStatus();
+
+    while (PTX) {
+	    status = getStatus();
+//TX_DS 5 0 R/W 数据发送完成中断。当数据发送完成后产生中
+//断。如果工作在自动应答模式下，只有当接收到应答信号后此位置一。
+//写‘1’清除中断。
+//MAX_RT 4 0 R/W 达到最多次重发中断。
+//写‘1’清除中断。
+//如果MAX_RT 中断产生则必须清除后系统才
+//能进行通讯。
+	    if((status & ((1 << TX_DS)  | (1 << MAX_RT)))){
+		    PTX = 0;
+		    break;
+	    }
+    }                  // Wait until last paket is send
+
+    ceLow();
+    
+    powerUpTx();       // Set to transmitter mode , Power up
+    
+    csnLow();                    // Pull down chip select
+    spi->transfer( FLUSH_TX );     // Write cmd to flush tx fifo
+    csnHi();                    // Pull up chip select
+    
+    csnLow();                    // Pull down chip select
+	//W_RX_PAYLOAD  1010 0000 写TX 有效数据：1-32 字节。写操作从字节0 开始。
+    //应用于发射模式下
+    spi->transfer( W_TX_PAYLOAD ); // Write cmd to write payload
+}
+
+void Nrf24l::send_content(uint8_t * data,uint8_t length) 
+{
+    transmitSync(data,length);   // Write payload
+}
+void Nrf24l::send_end() 
+{
+    csnHi();                    // Pull up chip select
+
+    ceHi();                     // Start transmission
+}
+
+
+
+
+
 /**
  * isSending.
  *
